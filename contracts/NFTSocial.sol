@@ -34,4 +34,18 @@ contract NFTSocial {
         emit ContentAdded(_contentId, _contentUri); // event to notify that the content was IPFS, used to fetch data on front end
         emit PostCreated (_postId, _owner,_parentId,_contentId,_categoryId); // fire event that post was created
     }
+
+    // Function to add a "like" or "upvote" to another user's post
+    function voteUp(bytes32 _postId, uint8 _reputationAdded) external { // _reputationAdded adds to the reputation of the _voter in specific category
+        address _voter = msg.sender;
+        bytes32 _category = postRegistry[_postId].categoryId;
+        address _contributor = postRegistry[_postId].postOwner;
+        require (postRegistry[_postId].postOwner != _voter, "User cannot vote their own posts");
+        require (voteRegistry[_voter][_postId] == false, "User already voted on this post");
+        require (validateReputationChange(_voter,_category,_reputationAdded) == true, "This address cannot add this amount of reputation points");
+        postRegistry[_postId].votes += 1; // increments the vote count of the specific post voted on
+        reputationRegistry[_contributor][_category] += _reputationAdded; // increments to reputation of the user
+        voteRegistry[_voter][_postId] = true; // saves voteRegistry as state and changes to true so the user can't vote twice
+        emit Voted(_postId, _contributor, _voter, reputationRegistry[_contributor][_category], reputationRegistry[_voter][_category], postRegistry[_postId].votes, true, _reputationAdded); // collects all voting data to be used to update UI
+    }
 }
