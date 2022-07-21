@@ -72,4 +72,11 @@ contract NFTSocial {
             2**_reputationAdded <= _reputation ? _result = true: _result = false; // we logarithmically determine the reputation added
         }
     }
+
+    // Function to add a new category for posts / discussion
+    function addCategory(string calldata _category) external {
+        bytes32 _categoryId = keccak256(abi.encode(_category));
+        categoryRegistry[_categoryId] = _category;
+        emit CategoryCreated(_categoryId, _category);
+    }
 }
