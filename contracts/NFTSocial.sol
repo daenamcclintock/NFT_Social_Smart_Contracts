@@ -48,4 +48,17 @@ contract NFTSocial {
         voteRegistry[_voter][_postId] = true; // saves voteRegistry as state and changes to true so the user can't vote twice
         emit Voted(_postId, _contributor, _voter, reputationRegistry[_contributor][_category], reputationRegistry[_voter][_category], postRegistry[_postId].votes, true, _reputationAdded); // collects all voting data to be used to update UI
     }
+
+    // Function to add a "dislike" or "downvote" to another user's post
+    function voteDown(bytes32 _postId, uint8 _reputationTaken) external {
+        address _voter = msg.sender;
+        bytes32 _category = postRegistry[_postId].categoryId;
+        address _contributor = postRegistry[_postId].postOwner;
+        require (voteRegistry[_voter][_postId] == false, "Sender already voted in this post");
+        require (validateReputationChange(_voter,_category,_reputationTaken)==true, "This address cannot take this amount of reputation points");
+        postRegistry[_postId].votes >= 1 ? postRegistry[_postId].votes -= 1 : postRegistry[_postId].votes = 0; // only decrement if user's votes are > 1; i.e. a post cannot have negative votes!
+        reputationRegistry[_contributor][_category] >= _reputationTaken ? reputationRegistry[_contributor][_category] -= _reputationTaken: reputationRegistry[_contributor][_category] =0;
+        voteRegistry[_voter][_postId] = true;
+        emit Voted(_postId, _contributor, _voter, reputationRegistry[_contributor][_category], reputationRegistry[_voter][_category], postRegistry[_postId].votes, false, _reputationTaken);
+    }
 }
