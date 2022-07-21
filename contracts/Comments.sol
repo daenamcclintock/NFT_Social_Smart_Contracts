@@ -67,7 +67,7 @@ contract Comments is NFTSocial {
     }
 
     // Function to validate the change in user reputation
-    function validateReputationChange(address _sender, bytes32 _categoryId, uint8 _reputationAdded) internal view returns (bool _result){
+    function validateReputationChange(address _sender, bytes32 _categoryId, uint8 _reputationAdded) internal view returns (bool _result) {
         uint80 _reputation = reputationRegistry[_sender][_categoryId];
         if (_reputation < 2 ) { // if the reputation of the user voting is less than 2
             _reputationAdded == 1 ? _result = true : _result = false; // the reputation added will only be one
@@ -75,5 +75,28 @@ contract Comments is NFTSocial {
         else { // if reputation is greater than 2
             2**_reputationAdded <= _reputation ? _result = true: _result = false; // we logarithmically determine the reputation added
         }
+    }
+
+    /* GET FUNCTIONS */
+
+    function getContent(bytes32 _contentId) public view returns (string memory) {
+        return contentRegistry[_contentId];
+    }
+    
+    function getCategory(bytes32 _categoryId) public view returns(string memory) {   
+        return categoryRegistry[_categoryId];
+    }
+
+    function getReputation(address _address, bytes32 _categoryID) public view returns(uint80) {   
+        return reputationRegistry[_address][_categoryID];
+    }
+
+    function getComment(bytes32 _commentId) public view returns(address, bytes32, bytes32, int72, bytes32) {   
+        return (
+            commentRegistry[_commentId].commentOwner,
+            commentRegistry[_commentId].parentComment,
+            commentRegistry[_commentId].contentId,
+            commentRegistry[_commentId].votes,
+            commentRegistry[_commentId].categoryId);
     }
 }
