@@ -52,4 +52,17 @@ contract Comments is NFTSocial {
         voteRegistry[_voter][_commentId] = true; // saves voteRegistry as state and changes to true so the user can't vote twice
         emit Voted(_commentId, _contributor, _voter, reputationRegistry[_contributor][_category], reputationRegistry[_voter][_category], commentRegistry[_commentId].votes, true, _reputationAdded); // collects all voting data to be used to update UI
     }
+
+    // Function to add a "dislike" or "downvote" to another user's comment
+    function voteDown(bytes32 _commentId, uint8 _reputationTaken) external {
+        address _voter = msg.sender;
+        bytes32 _category = commentRegistry[_commentId].categoryId;
+        address _contributor = commentRegistry[_commentId].commentOwner;
+        require (voteRegistry[_voter][_commentId] == false, "User already voted in this comment");
+        require (validateReputationChange(_voter,_category,_reputationTaken)==true, "This address cannot take this amount of reputation points");
+        commentRegistry[_commentId].votes >= 1 ? commentRegistry[_commentId].votes -= 1 : commentRegistry[_commentId].votes = 0; // only decrement if user's votes are > 1; i.e. a comment cannot have negative votes!
+        reputationRegistry[_contributor][_category] >= _reputationTaken ? reputationRegistry[_contributor][_category] -= _reputationTaken: reputationRegistry[_contributor][_category] =0;
+        voteRegistry[_voter][_commentId] = true;
+        emit Voted(_commentId, _contributor, _voter, reputationRegistry[_contributor][_category], reputationRegistry[_voter][_category], commentRegistry[_commentId].votes, false, _reputationTaken);
+    }
 }
