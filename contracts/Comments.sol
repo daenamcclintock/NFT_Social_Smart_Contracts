@@ -38,4 +38,18 @@ contract Comments is NFTSocial {
         emit ContentAdded(_contentId, _contentUri); // event to notify that the content was IPFS, used to fetch data on front end
         emit CommentCreated (_commentId, _owner,_parentId,_contentId,_categoryId); // fire event that the comment was created
     }
+
+    // Function to add a "like" or "upvote" to another user's comment
+    function voteUp(bytes32 _commentId, uint8 _reputationAdded) external { // _reputationAdded adds to the reputation of the _voter in specific category
+        address _voter = msg.sender;
+        bytes32 _category = commentRegistry[_commentId].categoryId;
+        address _contributor = commentRegistry[_commentId].commentOwner;
+        require (commentRegistry[_commentId].commentOwner != _voter, "User cannot vote their own comments");
+        require (voteRegistry[_voter][_commentId] == false, "User already voted on this comment");
+        require (validateReputationChange(_voter,_category,_reputationAdded) == true, "This address cannot add this amount of reputation points");
+        commentRegistry[_commentId].votes += 1; // increments the vote count of the specific comment voted on
+        reputationRegistry[_contributor][_category] += _reputationAdded; // increments to reputation of the user
+        voteRegistry[_voter][_commentId] = true; // saves voteRegistry as state and changes to true so the user can't vote twice
+        emit Voted(_commentId, _contributor, _voter, reputationRegistry[_contributor][_category], reputationRegistry[_voter][_category], commentRegistry[_commentId].votes, true, _reputationAdded); // collects all voting data to be used to update UI
+    }
 }
