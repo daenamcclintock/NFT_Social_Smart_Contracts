@@ -10,7 +10,7 @@ contract Comments {
     // Data structure for each comment
     struct comment {
         address commentOwner;
-        bytes32 parentPost;
+        bytes32 parentComment;
         bytes32 contentId;
         int40 votes;
         bytes32 categoryId;
