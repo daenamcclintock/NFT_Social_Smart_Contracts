@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "./NFTSocial.sol";
-
-contract Comments is NFTSocial {
+contract Comments {
 
     event CommentCreated (bytes32 indexed commentId, address indexed commentOwner, bytes32 indexed parentId, bytes32 contentId, bytes32 categoryId);
     event ContentAdded (bytes32 indexed contentId, string contentUri);
