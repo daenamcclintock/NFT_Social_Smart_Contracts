@@ -65,4 +65,15 @@ contract Comments is NFTSocial {
         voteRegistry[_voter][_commentId] = true;
         emit Voted(_commentId, _contributor, _voter, reputationRegistry[_contributor][_category], reputationRegistry[_voter][_category], commentRegistry[_commentId].votes, false, _reputationTaken);
     }
+
+    // Function to validate the change in user reputation
+    function validateReputationChange(address _sender, bytes32 _categoryId, uint8 _reputationAdded) internal view returns (bool _result){
+        uint80 _reputation = reputationRegistry[_sender][_categoryId];
+        if (_reputation < 2 ) { // if the reputation of the user voting is less than 2
+            _reputationAdded == 1 ? _result = true : _result = false; // the reputation added will only be one
+        }
+        else { // if reputation is greater than 2
+            2**_reputationAdded <= _reputation ? _result = true: _result = false; // we logarithmically determine the reputation added
+        }
+    }
 }
