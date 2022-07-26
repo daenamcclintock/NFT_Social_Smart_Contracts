@@ -1,9 +1,9 @@
 const { ethers, network } = require("hardhat")
-const { moveBlocks } = require("../utils/move-blocks")
+const { moveBlocks } = require("../../utils/move-blocks")
 
-const parentId = "0x6162636400000000000000000000000000000000000000000000000000000000"
+const parentId = "0x0000000000000000000000000000000000000000000000000000000000000000"
 const contentUri = "https://ipfs.com"
-const categoryId = "0x6162636400000000000000000000000000000000000000000000000000000000"
+const categoryId = "0x0000000000000000000000000000000000000000000000000000000000000000"
 
 const createPost = async () => {
     const nftSocial = await ethers.getContract("NFTSocial")
