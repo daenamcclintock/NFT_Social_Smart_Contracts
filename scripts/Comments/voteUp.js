@@ -5,10 +5,10 @@ const postId = "0x00000000000000000000000000000000000000000000000000000000000000
 const reputationAdded = 1
 
 const voteUp = async () => {
-    const nftSocial = await ethers.getContract("NFTSocial")
-    const transaction = await nftSocial.voteUp(postId, reputationAdded)
+    const comment = await ethers.getContract("Comments")
+    const transaction = await comment.voteUp(postId, reputationAdded)
     await transaction.wait(1)
-    console.log("Post Liked !")
+    console.log("Comment Liked !")
     if (network.config.chainId == "31337") {
         await moveBlocks(2, (sleepAmount = 1000))
     }
