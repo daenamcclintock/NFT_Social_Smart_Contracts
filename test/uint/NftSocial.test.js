@@ -21,19 +21,16 @@ const { developmentChains } = require("../../helper-hardhat-config")
             nftSocial = await nftSocialContract.connect(deployer)
             // console.log("nftSocial", nftSocial)
             await nftSocial.createPost(parentId, contentUri, categoryId)
-
         })
 
         describe("createPost", () => {
             it("emits an event after creating a post", async () => {
-                let createPost = await nftSocial.createPost(parentId, contentUri, categoryId)
-                console.log(createPost)
-                expect(await nftSocial.createPost(parentId, contentUri, categoryId).to.emit(
+                expect(await nftSocial.createPost(parentId, contentUri, categoryId)).to.emit(
+                    "PostCreated"
+                )
+                expect(await nftSocial.createPost(parentId, contentUri, categoryId)).to.emit(
                     "ContentAdded"
-                ))
-                // expect(await nftSocial.createPost(parentId, contentUri, categoryId).to.emit(
-                //     "PostCreated"
-                // ))
+                )
             })
         })
     })
