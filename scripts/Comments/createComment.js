@@ -6,8 +6,8 @@ const contentUri = "https://ipfs.com"
 const categoryId = "0x0000000000000000000000000000000000000000000000000000000000000000"
 
 const createComment = async () => {
-    const nftSocial = await ethers.getContract("Comments")
-    const transaction = await nftSocial.createComment(parentId, contentUri, categoryId)
+    const comments = await ethers.getContract("Comments")
+    const transaction = await comments.createComment(parentId, contentUri, categoryId)
     await transaction.wait(1)
     console.log("Comment Created !")
     if (network.config.chainId == "31337") {
