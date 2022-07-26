@@ -5,7 +5,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
 
 !developmentChains.includes(network.name)
     ? describe.skip
-    : describe("NFT Social Unit Tests", () => {
+    : describe("NFT Social Contract Unit Tests", () => {
         let nftSocial, nftSocialContract
 
         beforeEach(async () => {
