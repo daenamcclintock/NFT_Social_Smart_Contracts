@@ -1,5 +1,5 @@
 const { ethers, network } = require("hardhat")
-const { moveBlocks } = require("../utils/move-blocks")
+const { moveBlocks } = require("../../utils/move-blocks")
 
 const postId = "0x0000000000000000000000000000000000000000000000000000000000000000"
 const reputationAdded = 1
