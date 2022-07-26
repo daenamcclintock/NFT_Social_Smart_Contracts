@@ -1,12 +1,14 @@
 const { assert, expect } = require("chai")
 const { network, deployments, ethers } = require("hardhat")
-const { idText, convertTypeAcquisitionFromJson } = require("typescript")
 const { developmentChains } = require("../../helper-hardhat-config")
 
 !developmentChains.includes(network.name)
     ? describe.skip
     : describe("NFT Social Contract Unit Tests", () => {
         let nftSocial, nftSocialContract
+        const parentId = "0x6162636400000000000000000000000000000000000000000000000000000000"
+        const contentUri = "https://ipfs.com"
+        const categoryId = "0x6162636400000000000000000000000000000000000000000000000000000000"
 
         beforeEach(async () => {
             accounts = await ethers.getSigners()
@@ -18,19 +20,20 @@ const { developmentChains } = require("../../helper-hardhat-config")
             // console.log("nftSocialContract", nftSocialContract)
             nftSocial = await nftSocialContract.connect(deployer)
             // console.log("nftSocial", nftSocial)
+            await nftSocial.createPost(parentId, contentUri, categoryId)
+
         })
 
         describe("createPost", () => {
             it("emits an event after creating a post", async () => {
-                let parentId = 0x626c756500000000000000000000000000000000000000000000000000000000
-                let contentUri = "https://ipfs.com"
-                let categoryId = 0x626c756500000000000000000000000000000000000000000000000000000000
+                let createPost = await nftSocial.createPost(parentId, contentUri, categoryId)
+                console.log(createPost)
                 expect(await nftSocial.createPost(parentId, contentUri, categoryId).to.emit(
                     "ContentAdded"
                 ))
-                expect(await nftSocial.createPost(parentId, contentUri, categoryId).to.emit(
-                    "PostCreated"
-                ))
+                // expect(await nftSocial.createPost(parentId, contentUri, categoryId).to.emit(
+                //     "PostCreated"
+                // ))
             })
         })
     })
