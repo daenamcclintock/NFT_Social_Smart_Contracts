@@ -57,10 +57,10 @@ const { developmentChains } = require("../../helper-hardhat-config")
 
             it("reverts if address tries to add too many repuation points", async () => {
                 const error = "This address cannot add this amount of reputation points"
-                const reputationPoints = 5
+                const reputationPointsAdded = 5
                 await nftSocial.createPost(parentId, contentUri, categoryId)
                 await expect(
-                    nftSocial.voteUp(postId, reputationPoints)
+                    nftSocial.voteUp(postId, reputationPointsAdded)
                 ).to.be.revertedWith(error)
             })
 
@@ -80,6 +80,30 @@ const { developmentChains } = require("../../helper-hardhat-config")
                 await expect(
                     nftSocial.voteDown(postId, reputationTaken)
                 ).to.be.revertedWith(error)
+            })
+
+            it("reverts if address tries to take too many repuation points", async () => {
+                const error = "This address cannot take this amount of reputation points"
+                const reputationPointsTaken = 5
+                await nftSocial.createPost(parentId, contentUri, categoryId)
+                await expect(
+                    nftSocial.voteDown(postId, reputationPointsTaken)
+                ).to.be.revertedWith(error)
+            })
+
+            it("emits an event and adds a dislike to the post", async () => {
+                expect(await nftSocial.voteDown(postId, reputationTaken)).to.emit(
+                    "Voted"
+                )
+            })
+        })
+
+        describe("addCategory", () => {
+            it("emits an event and adds a category", async () => {
+                const categoryName = "Travel"
+                expect(await nftSocial.addCategory(categoryName)).to.emit(
+                    "CategoryCreated"
+                )
             })
         })
     })
