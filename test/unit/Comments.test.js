@@ -7,10 +7,10 @@ const { developmentChains } = require("../../helper-hardhat-config")
     ? describe.skip
     : describe("Comments Contract Unit Tests", () => {
         let comments, commentsContract
-        const parentId = "0x6162636400000000000000000000000000000000000000000000000000000000"
+        const parentId = "0x0000000000000000000000000000000000000000000000000000000000000000"
         const contentUri = "https://ipfs.com"
-        const categoryId = "0x6162636400000000000000000000000000000000000000000000000000000000"
-        const postId = "0x6162636400000000000000000000000000000000000000000000000000000000"
+        const categoryId = "0x0000000000000000000000000000000000000000000000000000000000000000"
+        const postId = "0x0000000000000000000000000000000000000000000000000000000000000000"
         const reputationAdded = 1
         const reputationTaken = 1
 
@@ -31,5 +31,26 @@ const { developmentChains } = require("../../helper-hardhat-config")
                     "CommentAdded"
                 )
             })
+        })
+
+        describe("voteUp", () => {
+            it("reverts if the user tries to vote on their own comment", async () => {
+                const voter = "0x0000000000000000000000000000000000000000"
+
+                const error = "User cannot vote their own comments"
+                await comments.createComment(parentId, contentUri, categoryId)
+                await expect(
+                    comments.voteUp(postId, reputationAdded)
+                ).to.be.revertedWith(error)
+            })
+        })
+
+        it("reverts if the user tries to vote on a comment more than once", async () => {
+            const error = "User already voted on this comment"
+            await comments.createComment(parentId, contentUri, categoryId)
+            await comments.voteUp(postId, reputationAdded)
+            await expect(
+                comments.voteUp(postId, reputationAdded)
+            ).to.be.revertedWith(error)
         })
     })
