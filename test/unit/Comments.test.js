@@ -69,4 +69,24 @@ const { developmentChains } = require("../../helper-hardhat-config")
                 )
             })
         })
+
+        describe("voteDown", () => {
+            it("reverts if the user tries to vote on a comment more than once", async () => {
+                const error = "User already voted in this commen"
+                await comments.createComment(parentId, contentUri, categoryId)
+                await comments.voteDown(postId, reputationTaken)
+                await expect(
+                    comments.voteDown(postId, reputationTaken)
+                ).to.be.revertedWith(error)
+            })
+
+            it("reverts if address tries to take too many repuation points", async () => {
+                const error = "This address cannot take this amount of reputation points"
+                const reputationPointsTaken = 5
+                await comments.createComment(parentId, contentUri, categoryId)
+                await expect(
+                    comments.voteDown(postId, reputationPointsTaken)
+                ).to.be.revertedWith(error)
+            })
+        })
     })
