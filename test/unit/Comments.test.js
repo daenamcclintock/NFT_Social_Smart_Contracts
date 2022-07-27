@@ -43,14 +43,30 @@ const { developmentChains } = require("../../helper-hardhat-config")
                     comments.voteUp(postId, reputationAdded)
                 ).to.be.revertedWith(error)
             })
-        })
 
-        it("reverts if the user tries to vote on a comment more than once", async () => {
-            const error = "User already voted on this comment"
-            await comments.createComment(parentId, contentUri, categoryId)
-            await comments.voteUp(postId, reputationAdded)
-            await expect(
-                comments.voteUp(postId, reputationAdded)
-            ).to.be.revertedWith(error)
+            it("reverts if the user tries to vote on a comment more than once", async () => {
+                const error = "User already voted on this comment"
+                await comments.createComment(parentId, contentUri, categoryId)
+                await comments.voteUp(postId, reputationAdded)
+                await expect(
+                    comments.voteUp(postId, reputationAdded)
+                ).to.be.revertedWith(error)
+            })
+
+            it("reverts if address tries to add too many repuation points", async () => {
+                const error = "This address cannot add this amount of reputation points"
+                const reputationPointsAdded = 5
+                await comments.createComment(parentId, contentUri, categoryId)
+                await expect(
+                    comments.voteUp(postId, reputationPointsAdded)
+                ).to.be.revertedWith(error)
+            })
+
+            it("emits an event and adds a like to the post", async () => {
+                await comments.createComment(parentId, contentUri, categoryId)
+                expect(await comments.voteUp(postId, reputationAdded)).to.emit(
+                    "Voted"
+                )
+            })
         })
     })
