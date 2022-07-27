@@ -11,6 +11,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
         const categoryId = "0x6162636400000000000000000000000000000000000000000000000000000000"
         const postId = "0x6162636400000000000000000000000000000000000000000000000000000000"
         const reputationAdded = 1
+        const reputationTaken = 1
 
         beforeEach(async () => {
             accounts = await ethers.getSigners()
@@ -37,7 +38,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
         describe("voteUp", () => {
             it("reverts if the user tries to vote on their own post", async () => {
                 const voter = "0x0000000000000000000000000000000000000000"
-                
+
                 const error = "User cannot vote their own posts"
                 await nftSocial.createPost(parentId, contentUri, categoryId)
                 await expect(
@@ -68,6 +69,17 @@ const { developmentChains } = require("../../helper-hardhat-config")
                 expect(await nftSocial.voteUp(postId, reputationAdded)).to.emit(
                     "Voted"
                 )
+            })
+        })
+
+        describe("voteDown", () => {
+            it("reverts if the user tries to vote on a post more than once", async () => {
+                const error = "User cannot vote their own posts"
+                await nftSocial.createPost(parentId, contentUri, categoryId)
+                await nftSocial.voteDown(postId, reputationTaken)
+                await expect(
+                    nftSocial.voteDown(postId, reputationTaken)
+                ).to.be.revertedWith(error)
             })
         })
     })

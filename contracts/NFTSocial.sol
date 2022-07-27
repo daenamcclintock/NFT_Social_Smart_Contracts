@@ -57,7 +57,7 @@ contract NFTSocial {
         address _voter = msg.sender;
         bytes32 _category = postRegistry[_postId].categoryId;
         address _contributor = postRegistry[_postId].postOwner;
-        require (voteRegistry[_voter][_postId] == false, "Sender already voted in this post");
+        require (voteRegistry[_voter][_postId] == false, "User cannot vote their own posts");
         require (validateReputationChange(_voter,_category,_reputationTaken)==true, "This address cannot take this amount of reputation points");
         postRegistry[_postId].votes >= 1 ? postRegistry[_postId].votes -= 1 : postRegistry[_postId].votes = 0; // only decrement if user's votes are > 1; i.e. a post cannot have negative votes!
         reputationRegistry[_contributor][_category] >= _reputationTaken ? reputationRegistry[_contributor][_category] -= _reputationTaken: reputationRegistry[_contributor][_category] =0;
