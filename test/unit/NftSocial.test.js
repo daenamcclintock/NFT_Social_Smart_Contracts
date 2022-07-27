@@ -6,21 +6,18 @@ const { developmentChains } = require("../../helper-hardhat-config")
     ? describe.skip
     : describe("NFT Social Contract Unit Tests", () => {
         let nftSocial, nftSocialContract
-        const parentId = "0x6162636400000000000000000000000000000000000000000000000000000000"
+        const parentId = "0x0000000000000000000000000000000000000000000000000000000000000000"
         const contentUri = "https://ipfs.com"
-        const categoryId = "0x6162636400000000000000000000000000000000000000000000000000000000"
-        const postId = "0x6162636400000000000000000000000000000000000000000000000000000000"
+        const categoryId = "0x0000000000000000000000000000000000000000000000000000000000000000"
+        const postId = "0x0000000000000000000000000000000000000000000000000000000000000000"
         const reputationAdded = 1
         const reputationTaken = 1
 
         beforeEach(async () => {
             accounts = await ethers.getSigners()
-            // console.log("accounts", accounts)
             deployer = accounts[0]
-            // console.log("deployer", deployer)
             await deployments.fixture(["all"])
             nftSocialContract = await ethers.getContract("NFTSocial")
-            // console.log("nftSocialContract", nftSocialContract)
             nftSocial = await nftSocialContract.connect(deployer)
         })
 
