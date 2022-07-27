@@ -9,6 +9,8 @@ const { developmentChains } = require("../../helper-hardhat-config")
         const parentId = "0x6162636400000000000000000000000000000000000000000000000000000000"
         const contentUri = "https://ipfs.com"
         const categoryId = "0x6162636400000000000000000000000000000000000000000000000000000000"
+        const postId = "0x6162636400000000000000000000000000000000000000000000000000000000"
+        const reputationAdded = 1
 
         beforeEach(async () => {
             accounts = await ethers.getSigners()
@@ -19,8 +21,6 @@ const { developmentChains } = require("../../helper-hardhat-config")
             nftSocialContract = await ethers.getContract("NFTSocial")
             // console.log("nftSocialContract", nftSocialContract)
             nftSocial = await nftSocialContract.connect(deployer)
-            // console.log("nftSocial", nftSocial)
-            await nftSocial.createPost(parentId, contentUri, categoryId)
         })
 
         describe("createPost", () => {
@@ -31,6 +31,34 @@ const { developmentChains } = require("../../helper-hardhat-config")
                 expect(await nftSocial.createPost(parentId, contentUri, categoryId)).to.emit(
                     "ContentAdded"
                 )
+            })
+        })
+
+        describe("voteUp", () => {
+            it("reverts if the user tries to vote on their own post", async () => {
+                const error = "User cannot vote their own posts"
+                await nftSocial.createPost(parentId, contentUri, categoryId)
+                await expect(
+                    nftSocial.voteUp(postId, reputationAdded)
+                ).to.be.revertedWith(error)
+            })
+            
+            it("reverts if the user tries to vote on a post more than once", async () => {
+                const error = "User already voted on this post"
+                await nftSocial.createPost(parentId, contentUri, categoryId)
+                await nftSocial.voteUp(postId, reputationAdded)
+                await expect(
+                    nftSocial.voteUp(postId, reputationAdded)
+                ).to.be.revertedWith(error)
+            })
+
+            it("reverts if address tries to add too many repuation points", async () => {
+                const error = "This address cannot add this amount of reputation points"
+                const reputationPoints = 5
+                await nftSocial.createPost(parentId, contentUri, categoryId)
+                await expect(
+                    nftSocial.voteUp(postId, reputationPoints)
+                ).to.be.revertedWith(error)
             })
         })
     })
