@@ -33,15 +33,15 @@ const { developmentChains } = require("../../helper-hardhat-config")
         })
 
         describe("voteUp", () => {
-            it("reverts if the user tries to vote on their own post", async () => {
-                const voter = "0x0000000000000000000000000000000000000000"
+            // it("reverts if the user tries to vote on their own post", async () => {
+            //     const voter = "0x0000000000000000000000000000000000000000"
 
-                const error = "User cannot vote their own posts"
-                await nftSocial.createPost(parentId, contentUri, categoryId)
-                await expect(
-                    nftSocial.voteUp(postId, reputationAdded)
-                ).to.be.revertedWith(error)
-            })
+            //     const error = "User cannot vote their own posts"
+            //     await nftSocial.createPost(parentId, contentUri, categoryId)
+            //     await expect(
+            //         nftSocial.voteUp(postId, reputationAdded)
+            //     ).to.be.revertedWith(error)
+            // })
             
             it("reverts if the user tries to vote on a post more than once", async () => {
                 const error = "User already voted on this post"

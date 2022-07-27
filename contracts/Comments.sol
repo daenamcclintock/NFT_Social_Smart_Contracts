@@ -23,7 +23,7 @@ contract Comments {
     mapping (address => mapping (bytes32 => bool)) voteRegistry; // mapping user address to a mapping of voteId to a boolean (like/dislike => true/false)
 
     // Function to create a comment based on the comment data structure defined above
-    function createComment(bytes32 _parentId, string calldata _contentUri, bytes32 _categoryId) external { // content URI is where the comment data is stored in IPFS
+    function createComment(bytes32 _parentId, string calldata _contentUri, bytes32 _categoryId) external /* returns (bytes32) */ { // content URI is where the comment data is stored in IPFS
         address _owner = msg.sender;
         bytes32 _contentId = keccak256(abi.encode(_contentUri)); // create contentId by hashing the _contentUri
         bytes32 _commentId = keccak256(abi.encodePacked(_owner, _parentId, _contentId)); // commentId comprised of the hash of owner, parentId, contentId
@@ -35,6 +35,7 @@ contract Comments {
         // commentRegistry[_commentId].votes = 0; (Not needed bc Solidity auto initialized ints to 0)
         emit ContentAdded(_contentId, _contentUri); // event to notify that the content was IPFS, used to fetch data on front end
         emit CommentCreated (_commentId, _owner,_parentId,_contentId,_categoryId); // fire event that the comment was created
+        /* return _commentId; */
     }
 
     // Function to add a "like" or "upvote" to another user's comment

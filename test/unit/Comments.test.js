@@ -10,7 +10,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
         const parentId = "0x0000000000000000000000000000000000000000000000000000000000000000"
         const contentUri = "https://ipfs.com"
         const categoryId = "0x0000000000000000000000000000000000000000000000000000000000000000"
-        const postId = "0x0000000000000000000000000000000000000000000000000000000000000000"
+        const commentId = "0x0000000000000000000000000000000000000000000000000000000000000000"
         const reputationAdded = 1
         const reputationTaken = 1
 
@@ -34,22 +34,26 @@ const { developmentChains } = require("../../helper-hardhat-config")
         })
 
         describe("voteUp", () => {
-            it("reverts if the user tries to vote on their own comment", async () => {
-                const voter = "0x0000000000000000000000000000000000000000"
-
-                const error = "User cannot vote their own comments"
-                await comments.createComment(parentId, contentUri, categoryId)
-                await expect(
-                    comments.voteUp(postId, reputationAdded)
-                ).to.be.revertedWith(error)
-            })
+        //     it("reverts if the user tries to vote on their own comment", async () => {
+        //         const voter = "0x0000000000000000000000000000000000000000"
+        //         const error = "User cannot vote their own comments"
+        //         const createComment = await comments.createComment(parentId, contentUri, categoryId)
+        //         console.log('THIS IS COMMENT', createComment)
+        //         const getComment = await comments.getComment(createComment.hash)
+        //         console.log(getComment)
+        //         createdCommentId = getComment[0]
+        //         console.log(createdCommentId)
+        //         await expect(
+        //             comments.voteUp(createComment.r, reputationAdded)
+        //         ).to.be.revertedWith(error)
+        //     })
 
             it("reverts if the user tries to vote on a comment more than once", async () => {
                 const error = "User already voted on this comment"
                 await comments.createComment(parentId, contentUri, categoryId)
-                await comments.voteUp(postId, reputationAdded)
+                const upVote = await comments.voteUp(commentId, reputationAdded)
                 await expect(
-                    comments.voteUp(postId, reputationAdded)
+                    comments.voteUp(commentId, reputationAdded)
                 ).to.be.revertedWith(error)
             })
 
@@ -58,13 +62,13 @@ const { developmentChains } = require("../../helper-hardhat-config")
                 const reputationPointsAdded = 5
                 await comments.createComment(parentId, contentUri, categoryId)
                 await expect(
-                    comments.voteUp(postId, reputationPointsAdded)
+                    comments.voteUp(commentId, reputationPointsAdded)
                 ).to.be.revertedWith(error)
             })
 
             it("emits an event and adds a like to the post", async () => {
                 await comments.createComment(parentId, contentUri, categoryId)
-                expect(await comments.voteUp(postId, reputationAdded)).to.emit(
+                expect(await comments.voteUp(commentId, reputationAdded)).to.emit(
                     "Voted"
                 )
             })
@@ -74,9 +78,9 @@ const { developmentChains } = require("../../helper-hardhat-config")
             it("reverts if the user tries to vote on a comment more than once", async () => {
                 const error = "User already voted in this comment"
                 await comments.createComment(parentId, contentUri, categoryId)
-                await comments.voteDown(postId, reputationTaken)
+                await comments.voteDown(commentId, reputationTaken)
                 await expect(
-                    comments.voteDown(postId, reputationTaken)
+                    comments.voteDown(commentId, reputationTaken)
                 ).to.be.revertedWith(error)
             })
 
@@ -85,12 +89,12 @@ const { developmentChains } = require("../../helper-hardhat-config")
                 const reputationPointsTaken = 5
                 await comments.createComment(parentId, contentUri, categoryId)
                 await expect(
-                    comments.voteDown(postId, reputationPointsTaken)
+                    comments.voteDown(commentId, reputationPointsTaken)
                 ).to.be.revertedWith(error)
             })
 
             it("emits an event and adds a dislike to the post", async () => {
-                expect(await comments.voteDown(postId, reputationTaken)).to.emit(
+                expect(await comments.voteDown(commentId, reputationTaken)).to.emit(
                     "Voted"
                 )
             })
