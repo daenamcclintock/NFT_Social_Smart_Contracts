@@ -24,7 +24,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
         })
 
         describe("createPost", () => {
-            it("emits an event after creating a post", async () => {
+            it("emits an event and creates a post", async () => {
                 expect(await nftSocial.createPost(parentId, contentUri, categoryId)).to.emit(
                     "PostCreated"
                 )
@@ -59,6 +59,13 @@ const { developmentChains } = require("../../helper-hardhat-config")
                 await expect(
                     nftSocial.voteUp(postId, reputationPoints)
                 ).to.be.revertedWith(error)
+            })
+
+            it("emits an event and adds a like to the post", async () => {
+                await nftSocial.createPost(parentId, contentUri, categoryId)
+                expect(await nftSocial.voteUp(postId, reputationAdded)).to.emit(
+                    "Voted"
+                )
             })
         })
     })
