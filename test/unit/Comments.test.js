@@ -72,7 +72,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
 
         describe("voteDown", () => {
             it("reverts if the user tries to vote on a comment more than once", async () => {
-                const error = "User already voted in this commen"
+                const error = "User already voted in this comment"
                 await comments.createComment(parentId, contentUri, categoryId)
                 await comments.voteDown(postId, reputationTaken)
                 await expect(
@@ -87,6 +87,12 @@ const { developmentChains } = require("../../helper-hardhat-config")
                 await expect(
                     comments.voteDown(postId, reputationPointsTaken)
                 ).to.be.revertedWith(error)
+            })
+
+            it("emits an event and adds a dislike to the post", async () => {
+                expect(await comments.voteDown(postId, reputationTaken)).to.emit(
+                    "Voted"
+                )
             })
         })
     })
